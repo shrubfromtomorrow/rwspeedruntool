@@ -1,0 +1,9 @@
+{
+  "id": "SpeedrunTool",
+  "name": "Speedrun Tool",
+  "authors": "CC, Shrub",
+  "description": "Speedrun Tools",
+  "requirements": [],
+  "requirements_names": [],
+  "checksum_override_version": false
+}

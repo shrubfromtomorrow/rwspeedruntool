@@ -1,48 +1,74 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-	<AssemblyName>RWSRTool</AssemblyName>
-    <Description>Shrub and CC's Miscellaneous Speedrun Tools</Description>
-    <TargetFramework>net48</TargetFramework>
-	<Version>1.0</Version>
-	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>Latest</LangVersion>
-	<NoWarn>MSB3277;CS0162</NoWarn>
-	<Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>SpeedrunTool</AssemblyName>
+		<Description>Shrub and CC's Miscellaneous Speedrun Tools</Description>
+		<TargetFramework>net48</TargetFramework>
+		<Version>1.0</Version>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<LangVersion>Latest</LangVersion>
+		<NoWarn>MSB3277;CS0162</NoWarn>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
 
 	<!-- Create a LocalBuildProperties.props file which defines Rain World Path (references dir)
 	     You can create a copy of LocalBuildProperties_example.props and change the path -->
-	
+
 	<Import Project="LocalBuildProperties_example.props" Condition="Exists('LocalBuildProperties_example.props')" />
 	<Import Project="LocalBuildProperties.props" Condition="Exists('LocalBuildProperties.props')" />
+
+	<ItemGroup>
+		<Reference Include="0Harmony.dll" HintPath="$(RainWorldPath)/BepInEx/core/0Harmony.dll" />
+		<Reference Include="0Harmony20.dll" HintPath="$(RainWorldPath)/BepInEx/core/0Harmony20.dll" />
+		<Reference Include="BepInEx.dll" HintPath="$(RainWorldPath)/BepInEx/core/BepInEx.dll" />
+		<Reference Include="BepInEx.Preloader.dll" HintPath="$(RainWorldPath)/BepInEx/core/BepInEx.Preloader.dll" />
+		<Reference Include="HarmonyXInterop.dll" HintPath="$(RainWorldPath)/BepInEx/core/HarmonyXInterop.dll" />
+		<Reference Include="Mono.Cecil.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.dll" />
+		<Reference Include="Mono.Cecil.Mdb.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.Mdb.dll" />
+		<Reference Include="Mono.Cecil.Pdb.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.Pdb.dll" />
+		<Reference Include="Mono.Cecil.Rocks.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.Rocks.dll" />
+		<Reference Include="Monomod.dll" HintPath="$(RainWorldPath)/BepInEx/core/Monomod.dll" />
+		<Reference Include="Monomod.RuntimeDetour.dll" HintPath="$(RainWorldPath)/BepInEx/core/Monomod.RuntimeDetour.dll" />
+		<Reference Include="Monomod.Utils.dll" HintPath="$(RainWorldPath)/BepInEx/core/Monomod.Utils.dll" />
+
+		<Reference Include="PUBLIC-Assembly-CSharp.dll" HintPath="C:\Program Files (x86)\Steam\steamapps\common\Rain World\BepInEx\utils\PUBLIC-Assembly-CSharp.dll" />
+
+		<Reference Include="HOOKS-Assembly-CSharp.dll" HintPath="$(RainWorldPath)/BepInEx/plugins/HOOKS-Assembly-CSharp.dll" />
+
+		<Reference Include="Assembly-CSharp-firstpass.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/Assembly-CSharp-firstpass.dll" />
+		<Reference Include="Assembly-CSharp.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/Assembly-CSharp.dll" />
+		<Reference Include="UnityEngine.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.dll" />
+		<Reference Include="UnityEngine.CoreModule.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.CoreModule.dll" />
+		<Reference Include="UnityEngine.InputLegacyModule.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.InputLegacyModule.dll" />
+		<Reference Include="UnityEngine.ImageConversionModule.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.ImageConversionModule.dll" />
+		<Reference Include="GoKit.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/GoKit.dll" />
+		<Reference Include="Rewired_Core.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/Rewired_Core.dll" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<SpeedrunToolFiles Include="SpeedrunTool\**\*" />
+		<Folder Include="Resources\" />
+	</ItemGroup>
 	
-  <ItemGroup>
-	<Reference Include="0Harmony.dll" HintPath="$(RainWorldPath)/BepInEx/core/0Harmony.dll" />
-	<Reference Include="0Harmony20.dll" HintPath="$(RainWorldPath)/BepInEx/core/0Harmony20.dll" />
-	<Reference Include="BepInEx.dll" HintPath="$(RainWorldPath)/BepInEx/core/BepInEx.dll" />
-	<Reference Include="BepInEx.Preloader.dll" HintPath="$(RainWorldPath)/BepInEx/core/BepInEx.Preloader.dll" />
-	<Reference Include="HarmonyXInterop.dll" HintPath="$(RainWorldPath)/BepInEx/core/HarmonyXInterop.dll" />
-	<Reference Include="Mono.Cecil.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.dll" />
-	<Reference Include="Mono.Cecil.Mdb.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.Mdb.dll" />
-	<Reference Include="Mono.Cecil.Pdb.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.Pdb.dll" />
-	<Reference Include="Mono.Cecil.Rocks.dll" HintPath="$(RainWorldPath)/BepInEx/core/Mono.Cecil.Rocks.dll" />
-	<Reference Include="Monomod.dll" HintPath="$(RainWorldPath)/BepInEx/core/Monomod.dll" />
-	<Reference Include="Monomod.RuntimeDetour.dll" HintPath="$(RainWorldPath)/BepInEx/core/Monomod.RuntimeDetour.dll" />
-	<Reference Include="Monomod.Utils.dll" HintPath="$(RainWorldPath)/BepInEx/core/Monomod.Utils.dll" />
-	
-	<Reference Include="PUBLIC-Assembly-CSharp.dll" HintPath="C:\Program Files (x86)\Steam\steamapps\common\Rain World\BepInEx\utils\PUBLIC-Assembly-CSharp.dll" />
-	
-	<Reference Include="HOOKS-Assembly-CSharp.dll" HintPath="$(RainWorldPath)/BepInEx/plugins/HOOKS-Assembly-CSharp.dll" />
-	
-	<Reference Include="Assembly-CSharp-firstpass.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/Assembly-CSharp-firstpass.dll" />
-	<Reference Include="Assembly-CSharp.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/Assembly-CSharp.dll" />
-	<Reference Include="UnityEngine.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.dll" />
-	<Reference Include="UnityEngine.CoreModule.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.CoreModule.dll" />
-	<Reference Include="UnityEngine.InputLegacyModule.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.InputLegacyModule.dll" />
-	<Reference Include="UnityEngine.ImageConversionModule.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.ImageConversionModule.dll" />
-	<Reference Include="GoKit.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/GoKit.dll" />
-    <Reference Include="Rewired_Core.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/Rewired_Core.dll" />
-  </ItemGroup>
+	<Target Name="Copy Plugin" AfterTargets="Build">
+		<MakeDir Directories="$(CopyDir)\SpeedrunTool" Condition="!Exists('$(CopyDir)\SpeedrunTool')" />
+		<Copy
+		  SourceFiles="@(SpeedrunToolFiles)"
+		  DestinationFiles="@(SpeedrunToolFiles->'$(CopyDir)\SpeedrunTool\%(RecursiveDir)%(Filename)%(Extension)')"
+		  SkipUnchangedFiles="true" />
+		<Copy
+		  SourceFiles="$(TargetPath)"
+		  DestinationFolder="$(CopyDir)/SpeedrunTool/plugins"
+		  SkipUnchangedFiles="true" />
+	</Target>
+
+	<Target Name="Setup Hot Reload" AfterTargets="Build">
+		<Message Text="Checking for reloadMods.txt in $(StreamingAssetsDir)" Importance="High" />
+		<Copy
+		  SourceFiles="Resources\reloadMods.txt"
+		  DestinationFolder="$(StreamingAssetsDir)"
+		  SkipUnchangedFiles="true"
+		  Condition="!Exists('$(StreamingAssetsDir)\reloadMods.txt')" />
+	</Target>
 </Project>
 
 

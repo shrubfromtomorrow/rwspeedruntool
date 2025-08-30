@@ -12,6 +12,10 @@ using System.Runtime.CompilerServices;
 using IL.JollyCoop;
 using BepInEx.Logging;
 using HarmonyLib.Tools;
+using IL;
+using On;
+using System.Data.SqlClient;
+using MoreSlugcats;
 
 #pragma warning disable CS0618
 
@@ -28,30 +32,54 @@ using HarmonyLib.Tools;
  * 
  */
 
-namespace RWSRTool;
+namespace SpeedrunTool;
 
-[BepInPlugin("CC+Shrub.SpeedrunTool", "SpeedrunTool", "1.0.0")]
-public class RWSRTool : BaseUnityPlugin {
-    public static RWSRTool Instance = null!;
+[BepInPlugin("RainWorld.SpeedrunTool", "SpeedrunTool", "1.0.0")]
+public class SpeedrunTool : BaseUnityPlugin {
+
+    //tracking the instance makes it easier to use separate modules for functionality
+    public static SpeedrunTool instance = null!;
     private bool isInit;
-    private void OnEnable() {
-        Instance = this;
+    private RainWorldGame rainWorldGame;
+    public void OnEnable() {
+        instance = this;
         //this is the way I'm used to logging with BepInEx, not sure if Rain World does it differently?
         Log.Init(Logger);
-        Log.Info("RWSRTool Started");
-        isInit = true;
-    }
 
-    private void OnDisable() {
-        Destroy(Instance);
-        Instance = null!;
+        //delegates
+        On.RainWorldGame.ctor += RainWorldGame_ctor;
+
+        isInit = true;
+        Log.Info("SpeedrunTool Started");
+    }
+    public void OnDisable() {
+        Log.Info("SpeedrunTool Stopping");
         isInit = false;
+
+        //delegates
+        On.RainWorldGame.ctor -= RainWorldGame_ctor;
+
+        instance = null!;
+        Destroy(this);
+    }
+    private void RainWorldGame_ctor(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
+    {
+        orig(self, manager);
+        this.rainWorldGame = self;
     }
 }
 // CC todo list
 //TODO: Setup config and keybinds
-//if (ModManager.MSC && base.grasps[0] != null && base.grasps[0].grabbed is EnergyCell && (base.grasps[0].grabbed as EnergyCell).usingTime > 0f && base.grasps[0].grabbed.Submersion != 0f)
 //TODO: Rarefaction Cell w/ hotkey (name = EnergyCell)
+/*
+if (Input.GetKeyDown(KeyCode.Alpha3)) {
+    Player player = rainWorldGame.Players[0].realizedCreature as Player;
+    EnergyCell cell = player.grasps[0].grabbed as EnergyCell;
+    cell.recharging = 0f;
+    cell.usingTime = 0f;
+    Log.Info("Cell Reset");
+}
+*/
 //Find the instance of a cell the player is holding
 //change its state to off and change cooldown to 0
 //TODO: Change Rot Cycle time to 2, or to a really big number w/ hotkey

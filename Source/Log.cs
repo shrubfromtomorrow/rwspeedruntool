@@ -1,6 +1,6 @@
 ﻿using BepInEx.Logging;
 //This entire file can be deleted if theres a different way to log thats RW specific
-namespace RWSRTool;
+namespace SpeedrunTool;
 
 internal static class Log {
     private static ManualLogSource logSource = null!;
