@@ -1,4 +1,6 @@
 ﻿using BepInEx.Logging;
+using System.Diagnostics;
+using System.IO;
 //This entire file can be deleted if theres a different way to log thats RW specific
 namespace SpeedrunTool;
 
@@ -9,7 +11,10 @@ internal static class Log {
         Log.logSource = logSource;
     }
 
-    internal static void Debug(object data) => logSource.LogDebug(data);
+    internal static void Debug(object data) {
+        logSource.LogDebug(data);
+        System.Diagnostics.Debug.WriteLine(data);
+    }
 
     internal static void Error(object data) => logSource.LogError(data);
 

@@ -18,6 +18,10 @@ using On;
 using System.Data.SqlClient;
 using MoreSlugcats;
 using IL.MoreSlugcats;
+using On.JollyCoop;
+using DevInterface;
+using JetBrains.Annotations;
+using IL.DevInterface;
 
 namespace SpeedrunTool;
 
@@ -69,20 +73,45 @@ internal static class Extensions {
         return null;
     }
 
-    //TODO: Fix this launching the player on room exit if not regrasped
-    //      Maybe this should be renamed changed object?
     /// <summary>
-    /// Replaces an item in hand with another item.
+    /// Places item in free hand, drops items until hand is free
     /// </summary>
     /// <param name="player">Player Instance</param>
     /// <param name="type">Enum Type of AbstractObject</param>
-    /// <param name="graspIndex">index of held objects</param>
+    /// <param name="graspIndex">Index of preferred grasp</param>
+    /// <param name="persist">Should SpeedrunTool remove it OnDisable</param>
+    /// <param name="handSwapGlitch">Cause handSwapGlitch</param>
     /// <returns>PhysicalObject</returns>
-    public static PhysicalObject GiveItem(this Player player, AbstractPhysicalObject.AbstractObjectType type, int graspIndex = 0) {
-        PhysicalObject item = Helpers.SpawnItem(player.room, player.mainBodyChunk.pos, type);
-        player.grasps[graspIndex].grabbed.Destroy();
-        player.grasps[graspIndex].grabbed = item;
-        return player.grasps[graspIndex].grabbed;
+    public static PhysicalObject GiveItem(this Player player, AbstractPhysicalObject.AbstractObjectType type, bool handSwapGlitch = false, int graspIndex = -1, bool persist = false) {
+        try {
+            int i = -1;
+            int g = -1;
+            PhysicalObject item = Helpers.SpawnItem(player.room, player.mainBodyChunk.pos, type, persist);
+            if (player.HeavyCarry(item) && !handSwapGlitch) {
+                for (int j = 0; j < player.grasps.Length; j++) {
+                    player.grasps[j].Release();
+                }
+            }
+
+            else while (player.FreeHand() < 0) {
+                if (graspIndex > -1 && player.grasps[graspIndex].grabbed != null) {
+                    player.grasps[graspIndex].Release();
+                }
+                else {
+                    i++;
+                    player.grasps[i].Release();
+                }
+            }
+
+            if (graspIndex > -1) g = graspIndex;
+            else g = player.FreeHand();
+            player.SlugcatGrab(item, g);
+            return player.grasps[g].grabbed;
+        }
+        catch (Exception e) {
+            Log.Error(e.ToString());
+            return null;
+        }
     }
 }
 

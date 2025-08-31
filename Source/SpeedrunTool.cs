@@ -42,11 +42,12 @@ public partial class SpeedrunTool : BaseUnityPlugin {
     public static SpeedrunTool instance = null!;
     public static RainWorldGame rainWorldGame;
 
-    //any items spawned tracked here so they can be destroyed
-    public List<PhysicalObject> trackedObjects = new List<PhysicalObject>();
+    /// <summary>
+    /// any items spawned tracked here so they can be destroyed, persist determines if we should destroy them
+    /// </summary>
+    public List<(PhysicalObject obj, bool persist)> trackedObjects = new List<(PhysicalObject, bool)>();
 
     private bool isInit;
-
 
     public void OnEnable() {
         instance = this;
@@ -63,8 +64,8 @@ public partial class SpeedrunTool : BaseUnityPlugin {
         Log.Info("SpeedrunTool Stopping");
         isInit = false;
 
-        //clean any spawned object
-        foreach (PhysicalObject obj in trackedObjects) obj.Destroy(); 
+        //destroy nonpersisting object
+        foreach (var trackedObject in trackedObjects) if (!trackedObject.persist) trackedObject.obj.Destroy(); 
 
         //remove delegates
         On.RainWorldGame.ctor -= RainWorldGame_ctor;
@@ -76,7 +77,6 @@ public partial class SpeedrunTool : BaseUnityPlugin {
         orig(self, manager);
         rainWorldGame = self;
     }
-
     public void Update() {
 
         //test function
