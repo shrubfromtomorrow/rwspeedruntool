@@ -28,7 +28,8 @@ namespace SpeedrunTool;
 /// <summary>
 /// This class contains a library of various game class extensions
 /// </summary>
-internal static class Extensions {
+internal static class Extensions
+{
 
     //All methods in this class are extensions for game objects
 
@@ -65,9 +66,11 @@ internal static class Extensions {
     /// <typeparam name="T">Type Of Object</typeparam>
     /// <param name="player">Player Instance</param>
     /// <returns>(T)PhysicalObject</returns>
-    public static T? GetHeldObject<T>(this Player player) where T : PhysicalObject {
-        foreach (PhysicalObject x in player.GetHeldObjects()) {
-            if (x.GetType() == typeof(T)) 
+    public static T? GetHeldObject<T>(this Player player) where T : PhysicalObject
+    {
+        foreach (PhysicalObject x in player.GetHeldObjects())
+        {
+            if (x.GetType() == typeof(T))
                 return (T)x;
         }
         return null;
@@ -82,33 +85,41 @@ internal static class Extensions {
     /// <param name="persist">Should SpeedrunTool remove it OnDisable</param>
     /// <param name="handSwapGlitch">Cause handSwapGlitch</param>
     /// <returns>PhysicalObject</returns>
-    public static PhysicalObject GiveItem(this Player player, AbstractPhysicalObject.AbstractObjectType type, bool handSwapGlitch = false, int graspIndex = -1, bool persist = false) {
-        try {
+    public static PhysicalObject GiveItem(this Player player, AbstractPhysicalObject.AbstractObjectType type, bool handSwapGlitch = false, int graspIndex = -1, bool persist = false)
+    {
+        try
+        {
             int i = -1;
             int g = -1;
             PhysicalObject item = Helpers.SpawnItem(player.room, player.mainBodyChunk.pos, type, persist);
-            if (player.HeavyCarry(item) && !handSwapGlitch) {
-                for (int j = 0; j < player.grasps.Length; j++) {
+            if (player.HeavyCarry(item) && !handSwapGlitch)
+            {
+                for (int j = 0; j < player.grasps.Length; j++)
+                {
                     player.grasps[j].Release();
                 }
             }
 
-            else while (player.FreeHand() < 0) {
-                if (graspIndex > -1 && player.grasps[graspIndex].grabbed != null) {
-                    player.grasps[graspIndex].Release();
+            else while (player.FreeHand() < 0)
+                {
+                    if (graspIndex > -1 && player.grasps[graspIndex].grabbed != null)
+                    {
+                        player.grasps[graspIndex].Release();
+                    }
+                    else
+                    {
+                        i++;
+                        player.grasps[i].Release();
+                    }
                 }
-                else {
-                    i++;
-                    player.grasps[i].Release();
-                }
-            }
 
             if (graspIndex > -1) g = graspIndex;
             else g = player.FreeHand();
             player.SlugcatGrab(item, g);
             return player.grasps[g].grabbed;
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             Log.Error(e.ToString());
             return null;
         }

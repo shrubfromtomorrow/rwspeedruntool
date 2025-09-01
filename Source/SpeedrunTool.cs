@@ -36,7 +36,8 @@ using MoreSlugcats;
 namespace SpeedrunTool;
 
 [BepInPlugin(MOD_ID, MOD_NAME, MOD_VERSION)]
-public partial class SpeedrunTool : BaseUnityPlugin {
+public partial class SpeedrunTool : BaseUnityPlugin
+{
     public const string MOD_ID = "CCshrub.SpeedrunTool";
     public const string MOD_NAME = "Speedrun Tool";
     public const string MOD_VERSION = "1.0.0";
@@ -53,7 +54,8 @@ public partial class SpeedrunTool : BaseUnityPlugin {
 
     private bool isInit;
 
-    public void OnEnable() {
+    public void OnEnable()
+    {
         instance = this;
         //this is the way I'm used to logging with BepInEx, not sure if Rain World does it differently?
         Log.Init(Logger);
@@ -74,12 +76,14 @@ public partial class SpeedrunTool : BaseUnityPlugin {
         Log.Info("Registering OI");
         MachineConnector.SetRegisteredOI(MOD_ID, instance.options);
     }
-    public void OnDisable() {
+    public void OnDisable()
+    {
         Log.Info("SpeedrunTool Stopping");
         isInit = false;
 
-        //destroy nonpersisting object
+        //destroy nonpersisting objects
         foreach (var trackedObject in trackedObjects) if (!trackedObject.persist) trackedObject.obj.Destroy();
+        //this should be unnecessary, the instance is destroyed and the list isnt static
         trackedObjects.Clear();
 
         //remove delegates
@@ -92,7 +96,8 @@ public partial class SpeedrunTool : BaseUnityPlugin {
         orig(self, manager);
         rainWorldGame = self;
     }
-    public void Update() {
+    public void Update()
+    {
 
         //test function
         if (Input.GetKeyDown(instance.options.SpawnKey.Value)) rainWorldGame.GetPlayer().GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);

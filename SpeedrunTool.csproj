@@ -42,6 +42,10 @@
 		<Reference Include="UnityEngine.ImageConversionModule.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/UnityEngine.ImageConversionModule.dll" />
 		<Reference Include="GoKit.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/GoKit.dll" />
 		<Reference Include="Rewired_Core.dll" HintPath="$(RainWorldPath)/RainWorld_Data/Managed/Rewired_Core.dll" />
+		
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Fody" Version="6.9.3" PrivateAssets="All" />
+		<PackageReference Include="Costura.Fody" Version="6.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -51,23 +55,13 @@
 	
 	<Target Name="Copy Plugin" AfterTargets="Build">
 		<MakeDir Directories="$(CopyDir)\SpeedrunTool" Condition="!Exists('$(CopyDir)\SpeedrunTool')" />
-		<Copy
-		  SourceFiles="@(SpeedrunToolFiles)"
-		  DestinationFiles="@(SpeedrunToolFiles->'$(CopyDir)\SpeedrunTool\%(RecursiveDir)%(Filename)%(Extension)')"
-		  SkipUnchangedFiles="true" />
-		<Copy
-		  SourceFiles="$(TargetPath)"
-		  DestinationFolder="$(CopyDir)/SpeedrunTool/plugins"
-		  SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(SpeedrunToolFiles)" DestinationFiles="@(SpeedrunToolFiles->'$(CopyDir)\SpeedrunTool\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CopyDir)/SpeedrunTool/plugins" SkipUnchangedFiles="true" />
 	</Target>
 
 	<Target Name="Setup Hot Reload" AfterTargets="Build">
 		<Message Text="Checking for reloadMods.txt in $(StreamingAssetsDir)" Importance="High" />
-		<Copy
-		  SourceFiles="Resources\reloadMods.txt"
-		  DestinationFolder="$(StreamingAssetsDir)"
-		  SkipUnchangedFiles="true"
-		  Condition="!Exists('$(StreamingAssetsDir)\reloadMods.txt')" />
+		<Copy SourceFiles="Resources\reloadMods.txt" DestinationFolder="$(StreamingAssetsDir)" SkipUnchangedFiles="true" Condition="!Exists('$(StreamingAssetsDir)\reloadMods.txt')" />
 	</Target>
 </Project>
 
