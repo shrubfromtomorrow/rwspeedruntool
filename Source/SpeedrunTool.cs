@@ -17,6 +17,7 @@ using IL;
 using On;
 using System.Data.SqlClient;
 using MoreSlugcats;
+using SpeedrunTool.Source;
 
 #pragma warning disable CS0618
 
@@ -46,6 +47,8 @@ public partial class SpeedrunTool : BaseUnityPlugin
     public static RainWorldGame? rainWorldGame;
 
     public SpeedrunToolOptions? options;
+
+    public static GlobalSettings settings = new GlobalSettings();
 
     /// <summary>
     /// any items spawned tracked here so they can be destroyed, persist determines if we should destroy them
