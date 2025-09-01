@@ -35,12 +35,16 @@ using MoreSlugcats;
 
 namespace SpeedrunTool;
 
-[BepInPlugin("RainWorld.SpeedrunTool", "SpeedrunTool", "1.0.0")]
+[BepInPlugin(MOD_ID, MOD_NAME, MOD_VERSION)]
 public partial class SpeedrunTool : BaseUnityPlugin {
-
+    public const string MOD_ID = "CCshrub.SpeedrunTool";
+    public const string MOD_NAME = "Speedrun Tool";
+    public const string MOD_VERSION = "1.0.0";
     //tracking the instance makes it easier to use separate modules for functionality
     public static SpeedrunTool instance = null!;
-    public static RainWorldGame rainWorldGame;
+    public static RainWorldGame? rainWorldGame;
+
+    public SpeedrunToolOptions? options;
 
     //any items spawned tracked here so they can be destroyed
     public List<PhysicalObject> trackedObjects = new List<PhysicalObject>();
@@ -56,15 +60,26 @@ public partial class SpeedrunTool : BaseUnityPlugin {
         //add delegates
         On.RainWorldGame.ctor += RainWorldGame_ctor;
 
+        //load remix
+        options = new SpeedrunToolOptions(instance);
+        On.RainWorld.OnModsInit += OnModsInit;
+
         isInit = true;
         Log.Info("SpeedrunTool Started");
+    }
+    public static void OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld raingame)
+    {
+        orig(raingame);
+        Log.Info("Registering OI");
+        MachineConnector.SetRegisteredOI(MOD_ID, instance.options);
     }
     public void OnDisable() {
         Log.Info("SpeedrunTool Stopping");
         isInit = false;
 
         //clean any spawned object
-        foreach (PhysicalObject obj in trackedObjects) obj.Destroy(); 
+        foreach (PhysicalObject obj in trackedObjects) obj.Destroy();
+        trackedObjects.Clear();
 
         //remove delegates
         On.RainWorldGame.ctor -= RainWorldGame_ctor;
@@ -80,7 +95,7 @@ public partial class SpeedrunTool : BaseUnityPlugin {
     public void Update() {
 
         //test function
-        if (Input.GetKeyDown(KeyCode.Alpha3)) rainWorldGame.GetPlayer().GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
+        if (Input.GetKeyDown(instance.options.SpawnKey.Value)) rainWorldGame.GetPlayer().GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
     }
 }
 // CC todo list
