@@ -6,8 +6,9 @@
 		<Version>1.0</Version>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<LangVersion>Latest</LangVersion>
-		<NoWarn>MSB3277;CS0162</NoWarn>
+		<NoWarn>MSB3277;CS0162;MSB3270</NoWarn>
 		<Nullable>enable</Nullable>
+		<Platforms>AnyCPU;x86</Platforms>
 	</PropertyGroup>
 
 	<!-- Create a LocalBuildProperties.props file which defines Rain World Path (references dir)

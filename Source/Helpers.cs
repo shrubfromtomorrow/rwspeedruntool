@@ -28,14 +28,15 @@ namespace SpeedrunTool {
         /// <param name="type">Enum type of object to spawn</param>
         /// <param name="persist">Should SpeedrunTool remove it OnDisable</param>
         /// <returns>PhysicalObject</returns>
-        public static PhysicalObject SpawnItem(Room room, Vector2 pos, AbstractPhysicalObject.AbstractObjectType type, bool persist = false) {
+        public static PhysicalObject? SpawnItem(Room room, Vector2 pos, AbstractPhysicalObject.AbstractObjectType type, bool persist = false) {
             try {
-                RainWorldGame game = SpeedrunTool.rainWorldGame;
+                RainWorldGame? game = SpeedrunTool.rainWorldGame;
+                if (game is null) return null;
                 World world = game.world;
                 AbstractPhysicalObject _item = new AbstractPhysicalObject(world, type, null, room.GetWorldCoordinate(pos), game.GetNewID());
                 _item.RealizeInRoom();
                 PhysicalObject item = _item.realizedObject;
-                SpeedrunTool.instance.trackedObjects.Add((item, persist));
+                SpeedrunTool.instance?.trackedObjects.Add((item, persist));
                 return item;
             }
             catch (Exception e) {

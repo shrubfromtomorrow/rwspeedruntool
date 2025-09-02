@@ -39,8 +39,8 @@ internal static class Extensions
     /// <param name="game">Instance of game</param>
     /// <param name="playerIndex">Index of player, default is 0</param>
     /// <returns>Player</returns>
-    public static Player GetPlayer(this RainWorldGame game, int playerIndex = 0) =>
-        game.Players[playerIndex].realizedCreature as Player;
+    public static Player? GetPlayer(this RainWorldGame? game, int playerIndex = 0) =>
+        game?.Players[playerIndex].realizedCreature as Player;
 
     /// <summary>
     /// Player Extension - returns a PhysicalObject[] array of held items
@@ -85,13 +85,13 @@ internal static class Extensions
     /// <param name="persist">Should SpeedrunTool remove it OnDisable</param>
     /// <param name="handSwapGlitch">Cause handSwapGlitch</param>
     /// <returns>PhysicalObject</returns>
-    public static PhysicalObject GiveItem(this Player player, AbstractPhysicalObject.AbstractObjectType type, bool handSwapGlitch = false, int graspIndex = -1, bool persist = false)
+    public static PhysicalObject? GiveItem(this Player player, AbstractPhysicalObject.AbstractObjectType type, bool handSwapGlitch = false, int graspIndex = -1, bool persist = false)
     {
         try
         {
             int i = -1;
             int g = -1;
-            PhysicalObject item = Helpers.SpawnItem(player.room, player.mainBodyChunk.pos, type, persist);
+            PhysicalObject? item = Helpers.SpawnItem(player.room, player.mainBodyChunk.pos, type, persist);
             if (player.HeavyCarry(item) && !handSwapGlitch)
             {
                 for (int j = 0; j < player.grasps.Length; j++)

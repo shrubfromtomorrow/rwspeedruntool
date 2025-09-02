@@ -27,7 +27,7 @@ namespace SpeedrunTool
         [BindableMethod(name = "Spawn Rarefaction Cell", category = "Items")]
         public static void SpawnRarefactionCell()
         {
-            SpeedrunTool.rainWorldGame.GetPlayer().GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
+            SpeedrunTool.rainWorldGame?.GetPlayer()?.GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
         }
 
         public class GlobalSettings

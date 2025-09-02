@@ -18,6 +18,9 @@ using On;
 using System.Data.SqlClient;
 using MoreSlugcats;
 using SpeedrunTool.Source;
+using System.Dynamic;
+using HarmonyLib;
+using Rewired;
 
 #pragma warning disable CS0618
 
@@ -43,9 +46,8 @@ public partial class SpeedrunTool : BaseUnityPlugin
     public const string MOD_NAME = "Speedrun Tool";
     public const string MOD_VERSION = "1.0.0";
     //tracking the instance makes it easier to use separate modules for functionality
-    public static SpeedrunTool instance = null!;
-    public static RainWorldGame? rainWorldGame;
-
+    public static SpeedrunTool? instance = null!;
+    public static RainWorldGame?  rainWorldGame;
     public SpeedrunToolOptions? options;
 
     public static GlobalSettings settings = new GlobalSettings();
@@ -77,7 +79,7 @@ public partial class SpeedrunTool : BaseUnityPlugin
     {
         orig(raingame);
         Log.Info("Registering OI");
-        MachineConnector.SetRegisteredOI(MOD_ID, instance.options);
+        MachineConnector.SetRegisteredOI(MOD_ID, instance?.options);
     }
     public void OnDisable()
     {
@@ -103,7 +105,7 @@ public partial class SpeedrunTool : BaseUnityPlugin
     {
 
         //test function
-        if (Input.GetKeyDown(instance.options.SpawnKey.Value)) rainWorldGame.GetPlayer().GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
+        if (Input.GetKeyDown((instance?.options?.SpawnKey.Value) ?? KeyCode.None)) rainWorldGame?.GetPlayer()?.GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
     }
 }
 // CC todo list
