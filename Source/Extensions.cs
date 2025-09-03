@@ -96,26 +96,30 @@ internal static class Extensions
             {
                 for (int j = 0; j < player.grasps.Length; j++)
                 {
-                    player.grasps[j].Release();
+                    if (player.grasps[j] is not null) player.grasps[j].Release();
                 }
             }
 
             else while (player.FreeHand() < 0)
+            {
+                if (graspIndex > -1 && player.grasps[graspIndex] != null)
                 {
-                    if (graspIndex > -1 && player.grasps[graspIndex].grabbed != null)
-                    {
-                        player.grasps[graspIndex].Release();
-                    }
-                    else
-                    {
-                        i++;
-                        player.grasps[i].Release();
-                    }
+                    player.grasps[graspIndex].Release();
                 }
+                else
+                {
+                    i++;
+                    if (player.grasps[i] is not null) player.grasps[i].Release();
+                }
+            }
 
             if (graspIndex > -1) g = graspIndex;
-            else g = player.FreeHand();
-            player.SlugcatGrab(item, g);
+            else
+            {
+                g = player.FreeHand();
+                Log.Debug("Placed in freehand");
+            }
+            player.SlugcatGrab(item, 0);
             return player.grasps[g].grabbed;
         }
         catch (Exception e)

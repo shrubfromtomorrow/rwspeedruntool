@@ -15,7 +15,8 @@ namespace SpeedrunTool
 
         public SpeedrunToolOptions(SpeedrunTool speedrunTool)
         {
-            SpawnKey = config.Bind<KeyCode>("SpawnKeybind", KeyCode.Alpha3);
+            //SpawnKey = config.Bind<KeyCode>("SpawnKeybind", KeyCode.Alpha3);
+            if(SpeedrunTool.settings.binds.TryGetValue("SpawnKey", out KeyCode key)) SpawnKey = config.Bind<KeyCode>("SpawnKeybind", key);
         }
 
         public override void Initialize()

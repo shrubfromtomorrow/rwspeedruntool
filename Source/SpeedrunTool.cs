@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security;
 using System.Security.Permissions;
+using System.Reflection;
 using UnityEngine;
 using RWCustom;
 using BepInEx;
@@ -17,10 +18,13 @@ using IL;
 using On;
 using System.Data.SqlClient;
 using MoreSlugcats;
-using SpeedrunTool.Source;
 using System.Dynamic;
 using HarmonyLib;
 using Rewired;
+using System.Runtime.Hosting;
+using System.IO;
+using System.Linq;
+using SpeedrunTool;
 
 #pragma warning disable CS0618
 
@@ -49,8 +53,32 @@ public partial class SpeedrunTool : BaseUnityPlugin
     public static SpeedrunTool? instance = null!;
     public static RainWorldGame?  rainWorldGame;
     public SpeedrunToolOptions? options;
+    public readonly string ModBasePath = Application.persistentDataPath + Path.DirectorySeparatorChar.ToString();
 
+    //Settings
     public static GlobalSettings settings = new GlobalSettings();
+    public SaveSettings LocalSaveData { get; set; } = new SaveSettings();
+
+    //Bindable Functions
+    internal static Dictionary<string, (string category, Action method)> bindMethods = new();
+
+    //These are all Hk's hooks for loading settings, we'll need to make our own
+    /// <summary>
+    /// loads global settings
+    /// </summary>
+    /// <param name="s">GlobalSettings </param>
+    public void OnLoadGlobal(GlobalSettings s)
+    {
+        SpeedrunTool.settings = s;
+        if (settings.binds is null)
+        {
+            settings.binds = new();
+            settings.binds = Keybinds.ResetToDefaults(settings.binds);
+        }
+    }
+    public GlobalSettings OnSaveGlobal() => settings;
+    public void OnLoadLocal(SaveSettings s) => this.LocalSaveData = s;
+    public SaveSettings OnSaveLocal() => this.LocalSaveData;
 
     /// <summary>
     /// any items spawned tracked here so they can be destroyed, persist determines if we should destroy them
@@ -65,6 +93,38 @@ public partial class SpeedrunTool : BaseUnityPlugin
         //this is the way I'm used to logging with BepInEx, not sure if Rain World does it differently?
         Log.Init(Logger);
 
+        //Clear each method in bindMethods because its static, grab every bindable function
+        //HK logs the time it takes, might've been substantial at some point?
+        float startTime = Time.realtimeSinceStartup;
+        Log.Info("Building Bindable Method Dictionary");
+        bindMethods.Clear();
+        foreach (MethodInfo method in typeof(BindableFunctions).GetMethods(BindingFlags.Public | BindingFlags.Static))
+        {
+            object[] attributes = method.GetCustomAttributes(typeof(BindableMethod), false);
+
+            if (attributes.Any())
+            {
+                BindableMethod attr = (BindableMethod)attributes[0];
+                string name = attr.name;
+                string cat = attr.category;
+
+                bindMethods.Add(name, (cat, (Action)Delegate.CreateDelegate(typeof(Action), method)));
+            }
+        }
+
+        Log.Info("Done! Time taken: " + (Time.realtimeSinceStartup - startTime) + "s. Found " + bindMethods.Count + " methods");
+
+        if (settings.FirstRun)
+        {
+            Log.Info("First run detected, setting default binds");
+
+            settings.FirstRun = false;
+            //Keybinds.ResetToDefaults(settings.binds);
+        }
+        
+        if (!Directory.Exists(ModBasePath)) Directory.CreateDirectory(ModBasePath);
+
+
         //add delegates
         On.RainWorldGame.ctor += RainWorldGame_ctor;
 
@@ -72,8 +132,9 @@ public partial class SpeedrunTool : BaseUnityPlugin
         options = new SpeedrunToolOptions(instance);
         On.RainWorld.OnModsInit += OnModsInit;
 
+
         isInit = true;
-        Log.Info("SpeedrunTool Started");
+        Log.Info("SpeedrunTool Started At "+ DateTime.Now);
     }
     public static void OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld raingame)
     {
@@ -96,6 +157,7 @@ public partial class SpeedrunTool : BaseUnityPlugin
 
         Destroy(instance);
     }
+
     private void RainWorldGame_ctor(On.RainWorldGame.orig_ctor orig, RainWorldGame self, ProcessManager manager)
     {
         orig(self, manager);
@@ -105,7 +167,10 @@ public partial class SpeedrunTool : BaseUnityPlugin
     {
 
         //test function
-        if (Input.GetKeyDown((instance?.options?.SpawnKey.Value) ?? KeyCode.None)) rainWorldGame?.GetPlayer()?.GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
+        //if (Input.GetKeyDown((instance?.options?.SpawnKey.Value) ?? KeyCode.None)) BindableFunctions.SpawnRarefactionCell();
+
+        if (Input.GetKeyDown(settings.binds["SpawnKey"])) BindableFunctions.SpawnRarefactionCell();
+
     }
 }
 // CC todo list

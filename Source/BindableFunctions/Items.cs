@@ -30,9 +30,5 @@ namespace SpeedrunTool
             SpeedrunTool.rainWorldGame?.GetPlayer()?.GiveItem(MoreSlugcatsEnums.AbstractObjectType.EnergyCell);
         }
 
-        public class GlobalSettings
-        {
-        }
-
     }
 }
