@@ -53,7 +53,7 @@ public partial class SpeedrunTool : BaseUnityPlugin
     public static SpeedrunTool? instance = null!;
     public static RainWorldGame?  rainWorldGame;
     public SpeedrunToolOptions? options;
-    public readonly string ModBasePath = Application.persistentDataPath + Path.DirectorySeparatorChar.ToString();
+    public readonly string ModBasePath = Application.persistentDataPath + Path.DirectorySeparatorChar.ToString() + "SpeedrunTool";
 
     //Settings
     public static GlobalSettings settings = new GlobalSettings();
@@ -90,7 +90,6 @@ public partial class SpeedrunTool : BaseUnityPlugin
     public void OnEnable()
     {
         instance = this;
-        //this is the way I'm used to logging with BepInEx, not sure if Rain World does it differently?
         Log.Init(Logger);
 
         //Clear each method in bindMethods because its static, grab every bindable function
@@ -129,7 +128,7 @@ public partial class SpeedrunTool : BaseUnityPlugin
         On.RainWorldGame.ctor += RainWorldGame_ctor;
 
         //load remix
-        options = new SpeedrunToolOptions(instance);
+        options = new SpeedrunToolOptions();
         On.RainWorld.OnModsInit += OnModsInit;
 
 
@@ -140,7 +139,7 @@ public partial class SpeedrunTool : BaseUnityPlugin
     {
         orig(raingame);
         Log.Info("Registering OI");
-        MachineConnector.SetRegisteredOI(MOD_ID, instance?.options);
+        if (MachineConnector.GetRegisteredOI(MOD_ID) != null) MachineConnector.SetRegisteredOI(MOD_ID, instance?.options);
     }
     public void OnDisable()
     {
@@ -196,3 +195,9 @@ public partial class SpeedrunTool : BaseUnityPlugin
 //Teleport player to position/room
 //TODO: Spawn items w/ hotkey
 //Spawn rock, spear, grapple worm
+
+// Shrub todo list
+//TODO: Create basic UI panel to house options
+// Create basic tabs and add certain options (cycle length suspension, etc.)
+//TODO: Create selection mode for timing - shortcuts vs tiles
+//TODO: Setup kebinds setting option in ui panel (tie to json?)

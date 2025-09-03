@@ -14,7 +14,9 @@ namespace SpeedrunTool
 
         public static Dictionary<string, KeyCode> ResetToDefaults(Dictionary<string, KeyCode> _binds)
         {
+            Log.Info("Resetting binds to default");
             Dictionary<string, KeyCode> binds = _binds;
+            binds.Clear();
 
             //Any Default Binds Go Here
             binds.Add("Spawn Rarefaction Cell", KeyCode.Alpha3);
