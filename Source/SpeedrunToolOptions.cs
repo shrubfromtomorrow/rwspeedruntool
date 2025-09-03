@@ -15,8 +15,9 @@ namespace SpeedrunTool
 
         public SpeedrunToolOptions(SpeedrunTool speedrunTool)
         {
+            string bindName = "Spawn Rarefaction Cell";
             //Spawn Rarefaction Cell = config.Bind<KeyCode>("Spawn Rarefaction Cellbind", KeyCode.Alpha3);
-            if(SpeedrunTool.settings.binds.TryGetValue("Spawn Rarefaction Cell", out KeyCode key)) SpawnKey = config.Bind<KeyCode>("Spawn Rarefaction Cellbind", key);
+            if (SpeedrunTool.settings.binds.TryGetValue(bindName, out KeyCode key)) SpawnKey = config.Bind<KeyCode>(bindName, key);
         }
 
         public override void Initialize()
