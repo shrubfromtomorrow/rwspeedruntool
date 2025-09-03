@@ -18,7 +18,7 @@ namespace SpeedrunTool
         [JsonProperty(ItemConverterType = typeof(StringEnumConverter))]
         public Dictionary<string, KeyCode> binds = new Dictionary<string, KeyCode>()
         {
-            { "SpawnKey", KeyCode.Alpha3 }
+            { "Spawn Rarefaction Cell", KeyCode.Alpha3 }
         };
 
         public bool FirstRun = true;

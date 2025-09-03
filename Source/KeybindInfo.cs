@@ -17,7 +17,7 @@ namespace SpeedrunTool
             Dictionary<string, KeyCode> binds = _binds;
 
             //Any Default Binds Go Here
-            binds.Add("SpawnKey", KeyCode.Alpha3);
+            binds.Add("Spawn Rarefaction Cell", KeyCode.Alpha3);
 
             return binds;
         }

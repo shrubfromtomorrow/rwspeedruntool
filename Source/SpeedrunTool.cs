@@ -167,9 +167,15 @@ public partial class SpeedrunTool : BaseUnityPlugin
     {
 
         //test function
-        //if (Input.GetKeyDown((instance?.options?.SpawnKey.Value) ?? KeyCode.None)) BindableFunctions.SpawnRarefactionCell();
+        //if (Input.GetKeyDown((instance?.options?.Spawn Rarefaction Cell.Value) ?? KeyCode.None)) BindableFunctions.SpawnRarefactionCell();
+        (string, Action) methodData;
+        string bindName = "Spawn Rarefaction Cell";
 
-        if (Input.GetKeyDown(settings.binds["SpawnKey"])) BindableFunctions.SpawnRarefactionCell();
+        if (Input.GetKeyDown(settings.binds[bindName]))
+        {
+            bindMethods.TryGetValue(bindName, out methodData);
+            methodData.Item2.Invoke();
+        }
 
     }
 }
